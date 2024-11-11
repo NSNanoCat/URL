@@ -35,11 +35,18 @@ export class URL {
         searchParams: new URLSearchParams(""),
         username: "",
     };
+    // refer: http://www.ietf.org/rfc/rfc3986.txt
+    static #URLRegExp = /^(?<scheme>([^:\/?#]+):)?(?:\/\/(?<authority>[^\/?#]*))?(?<path>[^?#]*)(?<query>\?([^#]*))?(?<hash>#(.*))?$/;
+    static #AuthorityRegExp = /^(?<authentication>(?<username>[^:]*)(:(?<password>[^@]*))?@)?(?<hostname>[^:]+)(:(?<port>\d+))?$/;
     get hash() {
         return this.#url.hash;
     }
     set hash(value) {
-        this.#url.hash = value.length > 0 ? `#${value.match(/^#*(.*)/)[1]}` : "";
+        if (value.length !== 0) {
+            if (value.startsWith("#"))
+                value = value.slice(1);
+            this.#url.hash = `#${encodeURIComponent(value)}`;
+        }
     }
     get host() {
         return this.port.length > 0 ? `${this.hostname}:${this.port}` : this.hostname;
@@ -56,37 +63,30 @@ export class URL {
         this.#url.hostname = encodeURIComponent(value);
     }
     get href() {
-        let value = `${this.protocol}//`;
+        let authority = "";
         if (this.username.length > 0) {
-            value += this.username;
+            authority += this.username;
             if (this.password.length > 0)
-                value += `:${this.password}`;
-            value += "@";
+                authority += `:${this.password}`;
+            authority += "@";
         }
-        value += this.host;
-        value += this.pathname + this.search + this.hash;
-        return value;
+        return `${this.protocol}//${authority}${this.host}${this.pathname}${this.search}${this.hash}`;
     }
     set href(value) {
         if (value.startsWith("blob:") || value.startsWith("file:"))
             value = value.slice(5);
-        this.protocol = value;
-        value = value.replace(/.*?:\/*/, "");
-        const usernameMatch = value.match(/([^:]*).*@/);
-        this.username = usernameMatch ? usernameMatch[1] : "";
-        value = value.replace(/([^:]*):?(.*@)/, this.#removeUsername);
-        const passwordMatch = value.match(/.*(?=@)/);
-        this.password = passwordMatch ? passwordMatch[0] : "";
-        value = value.replace(/.*@/, "");
-        this.hostname = value.match(/[^:/?]*/)[0];
-        const portMatch = value.match(/:(\d+)/);
-        this.port = portMatch ? portMatch[1] : "";
-        const pathnameMatch = value.match(/\/([^?#]*)/);
-        this.pathname = pathnameMatch ? pathnameMatch[1] : "";
-        const searchMatch = value.match(/\?[^#]*/);
-        this.search = searchMatch ? searchMatch[0] : "";
-        const hashMatch = value.match(/\#.*/);
-        this.hash = hashMatch ? hashMatch[0] : "";
+        const urlMatch = value.match(URL.#URLRegExp);
+        if (!urlMatch)
+            throw new TypeError("Invalid URL format.");
+        this.protocol = urlMatch.groups.scheme ?? "";
+        const authorityMatch = urlMatch.groups.authority.match(URL.#AuthorityRegExp);
+        this.username = authorityMatch.groups.username ?? "";
+        this.password = authorityMatch.groups.password ?? "";
+        this.hostname = authorityMatch.groups.hostname ?? "";
+        this.port = authorityMatch.groups.port ?? "";
+        this.pathname = urlMatch.groups.path ?? "";
+        this.search = urlMatch.groups.query ?? "";
+        this.hash = urlMatch.groups.hash ?? "";
     }
     get origin() {
         return `${this.protocol}//${this.host}`;
@@ -172,11 +172,5 @@ export class URL {
             username: this.username,
         };
         return JSON.stringify(url);
-    };
-    #removeUsername = (match, username, password) => {
-        if (password === "@")
-            return "";
-        else
-            return password;
     };
 }
