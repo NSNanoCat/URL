@@ -90,11 +90,11 @@ export class URL {
         return `${this.protocol}//${this.host}`;
     }
     get password() {
-        return this.#url.password;
+        return encodeURIComponent(this.#url.password);
     }
     set password(value) {
         if (this.username.length > 0)
-            this.#url.password = encodeURIComponent(value ?? "");
+            this.#url.password = value ?? "";
     }
     get pathname() {
         return this.#url.pathname;
