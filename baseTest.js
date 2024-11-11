@@ -1,0 +1,18 @@
+const url = new URL('https://example.com//path');
+console.log(url.pathname);
+console.log(url.href);
+url.pathname = '///test/path';
+console.log(url.pathname);
+console.log(url.href);
+url.pathname = '/';
+console.log(url.pathname);
+console.log(url.href);
+url.pathname = '//';
+console.log(url.pathname);
+console.log(url.href);
+url.pathname = '///';
+console.log(url.pathname);
+console.log(url.href);
+url.username = 'username';
+console.log(url.href);
+$done();
