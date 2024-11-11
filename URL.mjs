@@ -52,9 +52,7 @@ export class URL {
         return this.port.length > 0 ? `${this.hostname}:${this.port}` : this.hostname;
     }
     set host(value) {
-        const parts = value.split(":", 2);
-        this.hostname = parts[0];
-        this.port = parts[1];
+        [this.hostname, this.port] = value.split(":", 2);
     }
     get hostname() {
         return this.#url.hostname;
