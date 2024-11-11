@@ -124,10 +124,12 @@ export class URL {
             this.#url.port = Math.min(65535, Number(value)).toString();
     }
     get protocol() {
-        return this.#url.protocol;
+        return `${this.#url.protocol}:`;
     }
     set protocol(value) {
-        this.#url.protocol = `${value.match(/[^/:]*/)[0]}:`;
+        if (value.endsWith(":"))
+            value = value.slice(0, -1);
+        this.#url.protocol = value;
     }
     get search() {
         this.search = this.#url.searchParams.toString();
