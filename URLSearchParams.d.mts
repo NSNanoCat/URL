@@ -13,4 +13,3 @@ export declare class URLSearchParams {
     toString: () => string;
     values: () => Iterator<string>;
 }
-//# sourceMappingURL=URLSearchParams.d.mts.map

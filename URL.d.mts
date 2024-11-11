@@ -37,4 +37,3 @@ export declare class URL {
      */
     toJSON: () => string;
 }
-//# sourceMappingURL=URL.d.mts.map
