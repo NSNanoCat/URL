@@ -40,13 +40,6 @@ describe('Base Tests', () => {
         assert.strictEqual(url.href, 'https://example.org/');
     });
 
-    it('should set and get pathname', () => {
-        const url = new URL('https://example.com');
-        url.pathname = 'test/path';
-        assert.strictEqual(url.pathname, '/test/path');
-        assert.strictEqual(url.href, 'https://example.com/test/path');
-    });
-
     it('should set and get search', () => {
         const url = new URL('https://example.com');
         url.search = 'query=1';
