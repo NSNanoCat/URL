@@ -29,7 +29,24 @@ describe('Base Tests', () => {
         const url = new URL('https://example.com');
         url.host = 'example.org:8080';
         assert.strictEqual(url.host, 'example.org:8080');
+        assert.strictEqual(url.port, '8080');
         assert.strictEqual(url.href, 'https://example.org:8080/');
+    });
+
+    it('should set and get port 443', () => {
+        const url = new URL('https://example.com');
+        url.port = '443';
+        assert.strictEqual(url.port, '');
+        assert.strictEqual(url.host, 'example.com');
+        assert.strictEqual(url.href, 'https://example.com/');
+    });
+
+    it('should set and get port 12345', () => {
+        const url = new URL('https://example.com');
+        url.port = '12345';
+        assert.strictEqual(url.port, '12345');
+        assert.strictEqual(url.host, 'example.com:12345');
+        assert.strictEqual(url.href, 'https://example.com:12345/');
     });
 
     it('should set and get hostname', () => {
@@ -53,13 +70,22 @@ describe('Base Tests', () => {
         assert.strictEqual(url.href, 'https://example.com/?query=1');
     });
 
-    it('should set and get username and password', () => {
+    it('should set and get username and password normal', () => {
         const url = new URL('https://example.com');
         url.username = 'user';
         url.password = 'pass';
         assert.strictEqual(url.username, 'user');
         assert.strictEqual(url.password, 'pass');
         assert.strictEqual(url.href, 'https://user:pass@example.com/');
+    });
+
+    it('should set and get username and password special', () => {
+        const url = new URL('https://example.com');
+        url.username = '0';
+        url.password = '0';
+        assert.strictEqual(url.username, '0');
+        assert.strictEqual(url.password, '0');
+        assert.strictEqual(url.href, 'https://0:0@example.com/');
     });
 
     it('should convert URL object to JSON', () => {
