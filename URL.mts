@@ -120,7 +120,7 @@ export class URL {
 	}
 	get search() {
 		this.#url.search = this.searchParams.toString();
-		if (this.#url.search.length > 0) return `?${this.#url.search}`
+		if (this.#url.search.length > 0) return `?${this.#url.search}`;
 		else return "";
 	}
 	set search(value: string) {
@@ -151,8 +151,8 @@ export class URL {
 	 *
 	 * @returns {string} A JSON string representation of the URL object.
 	 */
-	toJSON = (): string => {
-		const url = {
+	toJSON = (): string =>
+		JSON.stringify({
 			hash: this.hash,
 			host: this.host,
 			hostname: this.hostname,
@@ -165,7 +165,5 @@ export class URL {
 			search: this.search,
 			searchParams: this.searchParams,
 			username: this.username,
-		};
-		return JSON.stringify(url);
-	};
+		});
 }

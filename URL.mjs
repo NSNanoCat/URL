@@ -164,21 +164,18 @@ export class URL {
      *
      * @returns {string} A JSON string representation of the URL object.
      */
-    toJSON = () => {
-        const url = {
-            hash: this.hash,
-            host: this.host,
-            hostname: this.hostname,
-            href: this.href,
-            origin: this.origin,
-            password: this.password,
-            pathname: this.pathname,
-            port: this.port,
-            protocol: this.protocol,
-            search: this.search,
-            searchParams: this.searchParams,
-            username: this.username,
-        };
-        return JSON.stringify(url);
-    };
+    toJSON = () => JSON.stringify({
+        hash: this.hash,
+        host: this.host,
+        hostname: this.hostname,
+        href: this.href,
+        origin: this.origin,
+        password: this.password,
+        pathname: this.pathname,
+        port: this.port,
+        protocol: this.protocol,
+        search: this.search,
+        searchParams: this.searchParams,
+        username: this.username,
+    });
 }
