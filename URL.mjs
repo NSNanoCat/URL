@@ -143,7 +143,7 @@ export class URL {
         return this.#url.searchParams;
     }
     get username() {
-        return this.#url.username;
+        return encodeURIComponent(this.#url.username);
     }
     set username(value) {
         this.#url.username = value ?? "";
