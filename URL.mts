@@ -26,7 +26,7 @@ export class URL {
 		hostname: "",
 		href: "",
 		password: "",
-		pathname: "/",
+		pathname: "",
 		port: "",
 		protocol: "",
 		search: "",
@@ -92,10 +92,12 @@ export class URL {
 		if (this.username.length > 0) this.#url.password = value ?? "";
 	}
 	get pathname() {
-		return this.#url.pathname;
+		return `/${this.#url.pathname}`;
 	}
 	set pathname(value: string) {
-		this.#url.pathname = `/${value.match(/\/?(.*)/)[1]}`;
+		value = `${value}`;
+		if (value.startsWith("/")) value = value.slice(1);
+		this.#url.pathname = value;
 	}
 	get port() {
 		switch (this.protocol) {
