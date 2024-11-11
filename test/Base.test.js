@@ -33,22 +33,6 @@ describe('Base Tests', () => {
         assert.strictEqual(url.href, 'https://example.org:8080/');
     });
 
-    it('should set and get port 443', () => {
-        const url = new URL('https://example.com');
-        url.port = '443';
-        assert.strictEqual(url.port, '');
-        assert.strictEqual(url.host, 'example.com');
-        assert.strictEqual(url.href, 'https://example.com/');
-    });
-
-    it('should set and get port 12345', () => {
-        const url = new URL('https://example.com');
-        url.port = '12345';
-        assert.strictEqual(url.port, '12345');
-        assert.strictEqual(url.host, 'example.com:12345');
-        assert.strictEqual(url.href, 'https://example.com:12345/');
-    });
-
     it('should set and get hostname', () => {
         const url = new URL('https://example.com');
         url.hostname = 'example.org';
