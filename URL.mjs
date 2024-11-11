@@ -55,10 +55,10 @@ export class URL {
         [this.hostname, this.port] = value.split(":", 2);
     }
     get hostname() {
-        return this.#url.hostname;
+        return encodeURIComponent(this.#url.hostname);
     }
     set hostname(value) {
-        this.#url.hostname = encodeURIComponent(value);
+        this.#url.hostname = value ?? "";
     }
     get href() {
         let authority = "";
