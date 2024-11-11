@@ -27,7 +27,7 @@ export class URL {
 		href: "",
 		password: "",
 		pathname: "",
-		port: "",
+		port: Number.NaN,
 		protocol: "",
 		search: "",
 		searchParams: new URLSearchParams(""),
@@ -100,20 +100,16 @@ export class URL {
 		this.#url.pathname = value;
 	}
 	get port() {
-		switch (this.protocol) {
-			case "ftp:":
-				return this.#url.port === "21" ? "" : this.#url.port;
-			case "http:":
-				return this.#url.port === "80" ? "" : this.#url.port;
-			case "https:":
-				return this.#url.port === "443" ? "" : this.#url.port;
-			default:
-				return this.#url.port;
-		}
+		if (Number.isNaN(this.#url.port)) return "";
+		const port = this.#url.port.toString();
+		if (this.protocol === "ftp:" && port === "21") return "";
+		if (this.protocol === "http:" && port === "80") return "";
+		if (this.protocol === "https:" && port === "443") return "";
+		return port;
 	}
 	set port(value: string) {
-		if (isNaN(Number(value)) || value === "") this.#url.port = "";
-		else this.#url.port = Math.min(65535, Number(value)).toString();
+		const port = Number.parseInt(value, 10);
+		if (port >= 0 && port < 65535) this.#url.port = port;
 	}
 	get protocol() {
 		return `${this.#url.protocol}:`;
