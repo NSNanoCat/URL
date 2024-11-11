@@ -1,7 +1,6 @@
 {
 	"name": "@nsnanocat/url",
 	"description": "Polyfill URL and URLSearchParams to match at least iOS 15 JavaScriptCore",
-	"version": "1.0.1",
 	"author": "VirgilClyne <Virgil@nanocat.me>",
 	"homepage": "https://NSNanoCat.github.io/url",
 	"keywords": [
