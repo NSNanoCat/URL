@@ -131,11 +131,17 @@ export class URL {
         this.#url.protocol = value;
     }
     get search() {
-        this.search = this.#url.searchParams.toString();
-        return this.#url.search;
+        this.#url.search = this.searchParams.toString();
+        if (this.#url.search.length > 0)
+            return `?${this.#url.search}`;
+        else
+            return "";
     }
     set search(value) {
-        this.#url.search = value.length > 0 ? `?${value.match(/\??(.*)/)[1]}` : "";
+        value = `${value}`;
+        if (value.startsWith("?"))
+            value = value.slice(1);
+        this.#url.search = value;
         this.#url.searchParams = new URLSearchParams(this.#url.search);
     }
     get searchParams() {

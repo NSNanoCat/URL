@@ -4,10 +4,9 @@ export class URLSearchParams {
             case "string": {
                 if (params.length === 0)
                     break;
-                const pairs = params
-                    .slice(1)
-                    .split("&")
-                    .map(pair => pair.split("="));
+                if (params.startsWith("?"))
+                    params = params.slice(1);
+                const pairs = params.split("&").map(pair => pair.split("="));
                 pairs.forEach(([key, value]) => {
                     this.#params.push(key);
                     this.#values.push(value);
@@ -40,7 +39,16 @@ export class URLSearchParams {
         if (params.length === 0)
             this.#param = "";
         else
-            this.#param = params.map((param, index) => `${param}=${values[index]}`).join("&");
+            this.#param = params.map((param, index) => {
+                switch (typeof values[index]) {
+                    case null:
+                    case undefined:
+                    default:
+                        return param;
+                    case "string":
+                        return `${param}=${values[index]}`;
+                }
+            }).join("&");
     }
     // Add a given param with a given value to the end.
     append(name, value) {
@@ -116,7 +124,7 @@ export class URLSearchParams {
         this.#updateSearchString(this.#params, this.#values);
     }
     // Return the search string without the '?'.
-    toString = () => (this.#param ? String(this.#param) : "");
+    toString = () => this.#param;
     // Return and array of the param values to mimic the native method's ES6 iterator..
     values = () => this.#values.values();
 }
