@@ -24,6 +24,7 @@ export declare class URL {
     get searchParams(): URLSearchParams;
     get username(): string;
     set username(value: string);
+    static parse: (url: string, base?: string) => URL;
     /**
      * Returns the string representation of the URL.
      *

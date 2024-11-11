@@ -139,6 +139,8 @@ export class URL {
 		this.#url.username = value ?? "";
 	}
 
+	static parse = (url: string, base?: string) => new URL(url, base);
+
 	/**
 	 * Returns the string representation of the URL.
 	 *

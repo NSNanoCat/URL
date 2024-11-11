@@ -153,6 +153,7 @@ export class URL {
     set username(value) {
         this.#url.username = value ?? "";
     }
+    static parse = (url, base) => new URL(url, base);
     /**
      * Returns the string representation of the URL.
      *
