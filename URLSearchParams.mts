@@ -36,16 +36,22 @@ export class URLSearchParams {
 	// Update the search property of the URL instance with the new params and values.
 	#updateSearchString(params: string[], values: string[]) {
 		if (params.length === 0) this.#param = "";
-		else this.#param = params.map((param, index) => {
-			switch (typeof values[index]) {
-				case null:
-				case undefined:
-				default:
-					return param;
-				case "string":
-					return `${param}=${values[index]}`;
-			}
-		}).join("&");
+		else
+			this.#param = params
+				.map((param, index) => {
+					switch (typeof values[index]) {
+						case "object":
+							return `${param}=${encodeURIComponent(JSON.stringify(values[index]))}`;
+						case "boolean":
+						case "number":
+						case "string":
+							return `${param}=${encodeURIComponent(values[index])}`;
+						case "undefined":
+						default:
+							return param;
+					}
+				})
+				.join("&");
 	}
 
 	// Add a given param with a given value to the end.

@@ -1,4 +1,4 @@
-import { URLSearchParams } from "./URLSearchParams.mts";
+import type { URLSearchParams } from "./URLSearchParams.mts";
 export declare class URL {
     #private;
     constructor(url: string, base?: string);

@@ -39,16 +39,21 @@ export class URLSearchParams {
         if (params.length === 0)
             this.#param = "";
         else
-            this.#param = params.map((param, index) => {
+            this.#param = params
+                .map((param, index) => {
                 switch (typeof values[index]) {
-                    case null:
-                    case undefined:
+                    case "object":
+                        return `${param}=${encodeURIComponent(JSON.stringify(values[index]))}`;
+                    case "boolean":
+                    case "number":
+                    case "string":
+                        return `${param}=${encodeURIComponent(values[index])}`;
+                    case "undefined":
                     default:
                         return param;
-                    case "string":
-                        return `${param}=${values[index]}`;
                 }
-            }).join("&");
+            })
+                .join("&");
     }
     // Add a given param with a given value to the end.
     append(name, value) {
