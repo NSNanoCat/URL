@@ -34,4 +34,10 @@ describe("Search Tests", () => {
 		assert.strictEqual(url.href, "https://example.com/?undefined");
 	});
 
+	it("should set and get search %25", () => {
+		url.search = "%25";
+		assert.strictEqual(url.search, "?%25");
+		assert.strictEqual(url.href, "https://example.com/?%25");
+	});
+
 });
