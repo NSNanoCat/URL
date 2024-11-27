@@ -8,22 +8,22 @@ export class URLSearchParams {
                     params = params.slice(1);
                 const pairs = params.split("&").map(pair => pair.split("="));
                 pairs.forEach(([key, value]) => {
-                    this.#params.push(key);
-                    this.#values.push(value);
+                    this.#params.push(key ? decodeURIComponent(key) : key);
+                    this.#values.push(value ? decodeURIComponent(value) : value);
                 });
                 break;
             }
             case "object":
                 if (Array.isArray(params)) {
                     Object.entries(params).forEach(([key, value]) => {
-                        this.#params.push(key);
-                        this.#values.push(value);
+                        this.#params.push(key ? decodeURIComponent(key) : key);
+                        this.#values.push(value ? decodeURIComponent(value) : value);
                     });
                 }
                 else if (Symbol.iterator in Object(params)) {
                     for (const [key, value] of params) {
-                        this.#params.push(key);
-                        this.#values.push(value);
+                        this.#params.push(key ? decodeURIComponent(key) : key);
+                        this.#values.push(value ? decodeURIComponent(value) : value);
                     }
                 }
                 break;
@@ -43,26 +43,32 @@ export class URLSearchParams {
                 .map((param, index) => {
                 switch (typeof values[index]) {
                     case "object":
-                        return `${param}=${encodeURIComponent(JSON.stringify(values[index]))}`;
+                        return `${encodeURIComponent(param)}=${encodeURIComponent(JSON.stringify(values[index]))}`;
                     case "boolean":
                     case "number":
                     case "string":
-                        return `${param}=${encodeURIComponent(values[index])}`;
+                        return `${encodeURIComponent(param)}=${encodeURIComponent(values[index])}`;
                     case "undefined":
                     default:
-                        return param;
+                        return encodeURIComponent(param);
                 }
             })
                 .join("&");
     }
     // Add a given param with a given value to the end.
     append(name, value) {
+        name = decodeURIComponent(name);
+        if (value)
+            value = decodeURIComponent(value);
         this.#params.push(name);
         this.#values.push(value);
         this.#updateSearchString(this.#params, this.#values);
     }
     // Remove all occurances of a given param
     delete(name, value) {
+        name = decodeURIComponent(name);
+        if (value)
+            value = decodeURIComponent(value);
         while (this.#params.indexOf(name) > -1) {
             this.#values.splice(this.#params.indexOf(name), 1);
             this.#params.splice(this.#params.indexOf(name), 1);
@@ -75,14 +81,19 @@ export class URLSearchParams {
     }
     // Return the value matched to the first occurance of a given param.
     get(name) {
+        name = decodeURIComponent(name);
         return this.#values[this.#params.indexOf(name)];
     }
     // Return all values matched to all occurances of a given param.
     getAll(name) {
+        name = decodeURIComponent(name);
         return this.#values.filter((value, index) => this.#params[index] === name);
     }
     // Return a boolean to indicate whether a given param exists.
     has(name, value) {
+        name = decodeURIComponent(name);
+        if (value)
+            value = decodeURIComponent(value);
         return this.#params.indexOf(name) > -1;
     }
     // Return an array of the param names to mimic the native method's ES6 iterator.
@@ -91,6 +102,9 @@ export class URLSearchParams {
     }
     // Set a given param to a given value.
     set(name, value) {
+        name = decodeURIComponent(name);
+        if (value)
+            value = decodeURIComponent(value);
         if (this.#params.indexOf(name) === -1) {
             this.append(name, value); // If the given param doesn't already exist, append it.
         }
