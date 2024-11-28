@@ -118,9 +118,16 @@ export class URL {
         return port;
     }
     set port(value) {
-        const port = Number.parseInt(value, 10);
-        if (port >= 0 && port < 65535)
-            this.#url.port = port;
+        switch (value) {
+            case "":
+                this.#url.port = Number.NaN;
+                break;
+            default: {
+                const port = Number.parseInt(value, 10);
+                if (port >= 0 && port < 65535)
+                    this.#url.port = port;
+            }
+        }
     }
     get protocol() {
         return `${this.#url.protocol}:`;
