@@ -53,4 +53,11 @@ describe("Port Tests", () => {
 		assert.strictEqual(url.href, "https://example.com:0/");
 	});
 
+	it("should set and get port ''", () => {
+		url.port = "";
+		assert.strictEqual(url.port, "");
+		assert.strictEqual(url.host, "example.com");
+		assert.strictEqual(url.href, "https://example.com/");
+	});
+
 });
