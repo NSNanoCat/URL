@@ -14,6 +14,7 @@
 		"javascriptcore"
 	],
 	"license": "Apache-2.0",
+	"bugs": "https://github.com/NSNanoCat/URL/issues",
 	"main": "URL.mjs",
 	"type": "module",
 	"scripts": {
@@ -28,9 +29,6 @@
 		"URL.mjs",
 		"URLSearchParams.mjs"
 	],
-	"publishConfig": {
-		"@nsnanocat:registry": "https://npm.pkg.github.com"
-	},
 	"devDependencies": {
 		"@types/node": "^22.9.0",
 		"mocha": "^10.8.2",
