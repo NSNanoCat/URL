@@ -126,7 +126,6 @@ export class URL {
 		this.#url.protocol = value;
 	}
 	get search() {
-		this.#url.search = this.searchParams.toString();
 		if (this.#url.search.length > 0) return `?${this.#url.search}`;
 		else return "";
 	}
@@ -134,7 +133,9 @@ export class URL {
 		value = `${value}`;
 		if (value.startsWith("?")) value = value.slice(1);
 		this.#url.search = value;
-		this.#url.searchParams = new URLSearchParams(this.#url.search);
+		this.#url.searchParams = new URLSearchParams(this.#url.search, search => {
+			this.#url.search = search;
+		});
 	}
 	get searchParams() {
 		return this.#url.searchParams;

@@ -40,4 +40,15 @@ describe("Search Tests", () => {
 		assert.strictEqual(url.href, "https://example.com/?%25");
 	});
 
+	it("should preserve the raw search until searchParams mutate", () => {
+		const url = new URL("https://example.com/?a=%7E&b=a+b&c=%2B&d=%2C");
+
+		assert.strictEqual(url.search, "?a=%7E&b=a+b&c=%2B&d=%2C");
+		assert.strictEqual(url.href, "https://example.com/?a=%7E&b=a+b&c=%2B&d=%2C");
+
+		url.searchParams.append("e", "f");
+		assert.strictEqual(url.search, "?a=~&b=a%2Bb&c=%2B&d=,&e=f");
+		assert.strictEqual(url.href, "https://example.com/?a=~&b=a%2Bb&c=%2B&d=,&e=f");
+	});
+
 });

@@ -1,5 +1,5 @@
 export class URLSearchParams {
-	constructor(params?: string | Iterable<[string, string]> | object) {
+	constructor(params?: string | Iterable<[string, string]> | object, onUpdate?: (search: string) => void) {
 		switch (typeof params) {
 			case "string": {
 				if (params.length === 0) break;
@@ -26,12 +26,14 @@ export class URLSearchParams {
 				break;
 		}
 		this.#updateSearchString(this.#params, this.#values);
+		this.#onUpdate = onUpdate;
 	}
 
 	// Create 2 seperate arrays for the params and values to make management and lookup easier.
 	#param = "";
 	#params: string[] = [];
 	#values: string[] = [];
+	#onUpdate?: (search: string) => void;
 
 	// Custom encode function that doesn't encode commas and other safe characters
 	// Only encodes characters that are not allowed in query strings according to RFC 3986
@@ -65,6 +67,7 @@ export class URLSearchParams {
 					}
 				})
 				.join("&");
+		this.#onUpdate?.(this.#param);
 	}
 
 	// Add a given param with a given value to the end.

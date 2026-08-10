@@ -1,6 +1,6 @@
 export declare class URLSearchParams {
     #private;
-    constructor(params?: string | Iterable<[string, string]> | object);
+    constructor(params?: string | Iterable<[string, string]> | object, onUpdate?: (search: string) => void);
     append(name: string, value: string): void;
     delete(name: string, value?: string): void;
     entries(): Array<[string, string]>;
