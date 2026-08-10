@@ -4,10 +4,13 @@ export class URLSearchParams {
 			case "string": {
 				if (params.length === 0) break;
 				if (params.startsWith("?")) params = params.slice(1);
-				const pairs: [string, string][] = params.split("&").map(pair => pair.split("=") as [string, string]);
+				const pairs: [string, string][] = params.split("&").map(pair => {
+					const separator = pair.indexOf("=");
+					return separator < 0 ? [pair, ""] : [pair.slice(0, separator), pair.slice(separator + 1)];
+				});
 				pairs.forEach(([key, value]) => {
-					this.#params.push(key ? decodeURIComponent(key) : key);
-					this.#values.push(value ? decodeURIComponent(value) : value);
+					this.#params.push(key ? this.#decodeQueryComponent(key) : key);
+					this.#values.push(this.#decodeQueryComponent(value));
 				});
 				break;
 			}
@@ -35,17 +38,14 @@ export class URLSearchParams {
 	#values: string[] = [];
 	#onUpdate?: (search: string) => void;
 
-	// Custom encode function that doesn't encode commas and other safe characters
-	// Only encodes characters that are not allowed in query strings according to RFC 3986
+	#decodeQueryComponent(str: string): string {
+		return decodeURIComponent(str.replace(/\+/g, " "));
+	}
+
 	#encodeQueryComponent(str: string): string {
-		// encodeURIComponent encodes too many characters, so we need to unencode safe ones
 		return encodeURIComponent(str)
-			.replace(/%2C/g, ",")  // Comma is safe
-			.replace(/%21/g, "!")  // Exclamation mark
-			.replace(/%27/g, "'")  // Single quote
-			.replace(/%28/g, "(")  // Left parenthesis
-			.replace(/%29/g, ")")  // Right parenthesis
-			.replace(/%2A/g, "*"); // Asterisk
+			.replace(/%20/g, "+")
+			.replace(/[!'()~]/g, character => `%${character.charCodeAt(0).toString(16).toUpperCase()}`);
 	}
 
 	// Update the search property of the URL instance with the new params and values.

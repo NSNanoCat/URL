@@ -47,8 +47,8 @@ describe("Search Tests", () => {
 		assert.strictEqual(url.href, "https://example.com/?a=%7E&b=a+b&c=%2B&d=%2C");
 
 		url.searchParams.append("e", "f");
-		assert.strictEqual(url.search, "?a=~&b=a%2Bb&c=%2B&d=,&e=f");
-		assert.strictEqual(url.href, "https://example.com/?a=~&b=a%2Bb&c=%2B&d=,&e=f");
+		assert.strictEqual(url.search, "?a=%7E&b=a+b&c=%2B&d=%2C&e=f");
+		assert.strictEqual(url.href, "https://example.com/?a=%7E&b=a+b&c=%2B&d=%2C&e=f");
 	});
 
 });
