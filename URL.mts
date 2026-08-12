@@ -12,8 +12,10 @@ export class URL {
 	 *
 	 * Creates a URL from an absolute URL string or a relative URL with a base.
 	 *
-	 * @param url - 要解析的绝对或相对 URL。 The absolute or relative URL to parse.
-	 * @param base - 用于解析相对 URL 的绝对基础 URL。 The absolute base URL used to resolve a relative URL.
+	 * @param url - 要解析的绝对或相对 URL。<br />
+	 * The absolute or relative URL to parse.
+	 * @param base - 用于解析相对 URL 的绝对基础 URL。<br />
+	 * The absolute base URL used to resolve a relative URL.
 	 */
 	constructor(url: string, base?: string) {
 		switch (typeof url) {
@@ -53,7 +55,10 @@ export class URL {
 	static #URLRegExp = /^(?<scheme>([^:\/?#]+):)?(?:\/\/(?<authority>[^\/?#]*))?(?<path>[^?#]*)(?<query>\?([^#]*))?(?<hash>#(.*))?$/;
 	static #AuthorityRegExp = /^(?<authentication>(?<username>[^:]*)(:(?<password>[^@]*))?@)?(?<hostname>[^:]+)(:(?<port>\d+))?$/;
 
-	/** URL 片段；存在时包含开头的 `#`。 The URL fragment, including the leading `#` when present. */
+	/**
+	 * URL 片段；存在时包含开头的 `#`。<br />
+	 * The URL fragment, including the leading `#` when present.
+	 */
 	get hash() {
 		return this.#url.hash;
 	}
@@ -63,21 +68,30 @@ export class URL {
 			this.#url.hash = `#${encodeURIComponent(value)}`;
 		}
 	}
-	/** URL 的主机名与端口。 The hostname and port of the URL. */
+	/**
+	 * URL 的主机名与端口。<br />
+	 * The hostname and port of the URL.
+	 */
 	get host() {
 		return this.port.length > 0 ? `${this.hostname}:${this.port}` : this.hostname;
 	}
 	set host(value: string) {
 		[this.hostname, this.port] = value.split(":", 2);
 	}
-	/** URL 编码后的主机名。 The encoded hostname of the URL. */
+	/**
+	 * URL 编码后的主机名。<br />
+	 * The encoded hostname of the URL.
+	 */
 	get hostname() {
 		return encodeURIComponent(this.#url.hostname);
 	}
 	set hostname(value: string) {
 		this.#url.hostname = value ?? "";
 	}
-	/** 完整序列化后的 URL。 The complete serialized URL. */
+	/**
+	 * 完整序列化后的 URL。<br />
+	 * The complete serialized URL.
+	 */
 	get href() {
 		let authority = "";
 		if (this.username.length > 0) {
@@ -101,18 +115,27 @@ export class URL {
 		this.search = urlMatch.groups.query ?? "";
 		this.hash = urlMatch.groups.hash ?? "";
 	}
-	/** 由协议与主机组成的序列化源。 The serialized origin, consisting of the protocol and host. */
+	/**
+	 * 由协议与主机组成的序列化源。<br />
+	 * The serialized origin, consisting of the protocol and host.
+	 */
 	get origin() {
 		return `${this.protocol}//${this.host}`;
 	}
-	/** 主机名前指定的编码后密码。 The encoded password specified before the host. */
+	/**
+	 * 主机名前指定的编码后密码。<br />
+	 * The encoded password specified before the host.
+	 */
 	get password() {
 		return encodeURIComponent(this.#url.password);
 	}
 	set password(value: string) {
 		if (this.username.length > 0) this.#url.password = value ?? "";
 	}
-	/** URL 路径，包含开头的 `/`。 The URL path, including the leading `/`. */
+	/**
+	 * URL 路径，包含开头的 `/`。<br />
+	 * The URL path, including the leading `/`.
+	 */
 	get pathname() {
 		return `/${this.#url.pathname}`;
 	}
@@ -121,7 +144,10 @@ export class URL {
 		if (value.startsWith("/")) value = value.slice(1);
 		this.#url.pathname = value;
 	}
-	/** 显式端口；使用协议默认端口时为空字符串。 The explicit port, or an empty string for the protocol's default port. */
+	/**
+	 * 显式端口；使用协议默认端口时为空字符串。<br />
+	 * The explicit port, or an empty string for the protocol's default port.
+	 */
 	get port() {
 		if (Number.isNaN(this.#url.port)) return "";
 		const port = this.#url.port.toString();
@@ -141,7 +167,10 @@ export class URL {
 			}
 		}
 	}
-	/** URL 协议，包含结尾的 `:`。 The URL scheme, including the trailing `:`. */
+	/**
+	 * URL 协议，包含结尾的 `:`。<br />
+	 * The URL scheme, including the trailing `:`.
+	 */
 	get protocol() {
 		return `${this.#url.protocol}:`;
 	}
@@ -149,7 +178,10 @@ export class URL {
 		if (value.endsWith(":")) value = value.slice(0, -1);
 		this.#url.protocol = value;
 	}
-	/** 序列化后的查询字符串；存在时包含开头的 `?`。 The serialized query string, including the leading `?` when present. */
+	/**
+	 * 序列化后的查询字符串；存在时包含开头的 `?`。<br />
+	 * The serialized query string, including the leading `?` when present.
+	 */
 	get search() {
 		if (this.#url.search.length > 0) return `?${this.#url.search}`;
 		else return "";
@@ -162,11 +194,17 @@ export class URL {
 			this.#url.search = search;
 		});
 	}
-	/** URL 查询参数的可变视图。 A mutable view of the URL query parameters. */
+	/**
+	 * URL 查询参数的可变视图。<br />
+	 * A mutable view of the URL query parameters.
+	 */
 	get searchParams() {
 		return this.#url.searchParams;
 	}
-	/** 主机名前指定的编码后用户名。 The encoded username specified before the host. */
+	/**
+	 * 主机名前指定的编码后用户名。<br />
+	 * The encoded username specified before the host.
+	 */
 	get username() {
 		return encodeURIComponent(this.#url.username);
 	}
@@ -179,9 +217,12 @@ export class URL {
 	 *
 	 * Parses a URL using the same inputs accepted by the constructor.
 	 *
-	 * @param url - 要解析的绝对或相对 URL。 The absolute or relative URL to parse.
-	 * @param base - 用于解析相对 URL 的绝对基础 URL。 The absolute base URL used to resolve a relative URL.
-	 * @returns 解析得到的 URL 实例。 A parsed URL instance.
+	 * @param url - 要解析的绝对或相对 URL。<br />
+	 * The absolute or relative URL to parse.
+	 * @param base - 用于解析相对 URL 的绝对基础 URL。<br />
+	 * The absolute base URL used to resolve a relative URL.
+	 * @returns 解析得到的 URL 实例。<br />
+	 * A parsed URL instance.
 	 */
 	static parse = (url: string, base?: string) => new URL(url, base);
 
@@ -190,7 +231,8 @@ export class URL {
 	 *
 	 * Returns the string representation of the URL.
 	 *
-	 * @returns 完整序列化后的 URL。 The complete serialized URL.
+	 * @returns 完整序列化后的 URL。<br />
+	 * The complete serialized URL.
 	 */
 	toString = (): string => this.href;
 
@@ -199,7 +241,8 @@ export class URL {
 	 *
 	 * Converts the URL object properties to a JSON string.
 	 *
-	 * @returns 包含 URL 公开属性的 JSON 字符串。 A JSON string containing the public URL properties.
+	 * @returns 包含 URL 公开属性的 JSON 字符串。<br />
+	 * A JSON string containing the public URL properties.
 	 */
 	toJSON = (): string =>
 		JSON.stringify({
