@@ -1,4 +1,14 @@
+/**
+ * A URL query-string polyfill with `application/x-www-form-urlencoded`
+ * parsing and serialization.
+ */
 export class URLSearchParams {
+	/**
+	 * Creates a query-parameter collection.
+	 *
+	 * @param params - A query string, an iterable of name-value pairs, or an object.
+	 * @param onUpdate - Called with the serialized query whenever the collection changes.
+	 */
 	constructor(params?: string | Iterable<[string, string]> | object, onUpdate?: (search: string) => void) {
 		switch (typeof params) {
 			case "string": {
@@ -70,14 +80,24 @@ export class URLSearchParams {
 		this.#onUpdate?.(this.#param);
 	}
 
-	// Add a given param with a given value to the end.
+	/**
+	 * Appends a new name-value pair.
+	 *
+	 * @param name - The parameter name.
+	 * @param value - The parameter value.
+	 */
 	append(name: string, value: string): void {
 		this.#params.push(name);
 		this.#values.push(value);
 		this.#updateSearchString(this.#params, this.#values);
 	}
 
-	// Remove all occurances of a given param
+	/**
+	 * Removes all pairs with the supplied name.
+	 *
+	 * @param name - The parameter name to remove.
+	 * @param value - Reserved for compatibility; currently all matching names are removed.
+	 */
 	delete(name: string, value?: string): void {
 		while (this.#params.indexOf(name) > -1) {
 			this.#values.splice(this.#params.indexOf(name), 1);
@@ -86,32 +106,56 @@ export class URLSearchParams {
 		this.#updateSearchString(this.#params, this.#values);
 	}
 
-	// Return an array to be structured in this way: [[param1, value1], [param2, value2]] to mimic the native method's ES6 iterator.
+	/**
+	 * Returns the name-value pairs in insertion order.
+	 *
+	 * @returns An array of parameter pairs.
+	 */
 	entries(): Array<[string, string]> {
 		return this.#params.map((param, index) => [param, this.#values[index]]);
 	}
 
-	// Return the value matched to the first occurance of a given param.
+	/**
+	 * Returns the first value associated with a name.
+	 *
+	 * @param name - The parameter name to find.
+	 * @returns The first matching value, or `undefined` when absent.
+	 */
 	get(name: string): string | undefined {
 		return this.#values[this.#params.indexOf(name)];
 	}
 
-	// Return all values matched to all occurances of a given param.
+	/**
+	 * Returns every value associated with a name.
+	 *
+	 * @param name - The parameter name to find.
+	 * @returns The matching values in insertion order.
+	 */
 	getAll(name: string): Array<string> {
 		return this.#values.filter((value, index) => this.#params[index] === name);
 	}
 
-	// Return a boolean to indicate whether a given param exists.
+	/**
+	 * Tests whether a parameter name exists.
+	 *
+	 * @param name - The parameter name to find.
+	 * @param value - Reserved for compatibility; currently only the name is tested.
+	 */
 	has(name: string, value?: string): boolean {
 		return this.#params.indexOf(name) > -1;
 	}
 
-	// Return an array of the param names to mimic the native method's ES6 iterator.
+	/** Returns the parameter names in insertion order. */
 	keys(): Array<string> {
 		return this.#params;
 	}
 
-	// Set a given param to a given value.
+	/**
+	 * Sets the value for a name and removes any additional pairs with that name.
+	 *
+	 * @param name - The parameter name to set.
+	 * @param value - The replacement value.
+	 */
 	set(name: string, value: string): void {
 		if (this.#params.indexOf(name) === -1) {
 			this.append(name, value); // If the given param doesn't already exist, append it.
@@ -138,7 +182,7 @@ export class URLSearchParams {
 		}
 	}
 
-	// Sort all key/value pairs, if any, by their keys then by their values.
+	/** Sorts all name-value pairs lexicographically. */
 	sort(): void {
 		// Call entries to make sorting easier, then rewrite the params and values in the new order.
 		const sortedPairs = this.entries().sort();
@@ -151,9 +195,9 @@ export class URLSearchParams {
 		this.#updateSearchString(this.#params, this.#values);
 	}
 
-	// Return the search string without the '?'.
+	/** Returns the serialized query string without a leading `?`. */
 	toString = (): string => this.#param;
 
-	// Return and array of the param values to mimic the native method's ES6 iterator..
+	/** Returns an iterator over parameter values in insertion order. */
 	values = (): Iterator<string> => this.#values.values();
 }

@@ -1,5 +1,16 @@
 import { URLSearchParams } from "./URLSearchParams.mts";
+
+/**
+ * A URL polyfill for JavaScriptCore environments that do not provide the Web
+ * URL API.
+ */
 export class URL {
+	/**
+	 * Creates a URL from an absolute URL string or a relative URL with a base.
+	 *
+	 * @param url - The absolute or relative URL to parse.
+	 * @param base - The absolute base URL used to resolve a relative URL.
+	 */
 	constructor(url: string, base?: string) {
 		switch (typeof url) {
 			case "string": {
@@ -38,6 +49,7 @@ export class URL {
 	static #URLRegExp = /^(?<scheme>([^:\/?#]+):)?(?:\/\/(?<authority>[^\/?#]*))?(?<path>[^?#]*)(?<query>\?([^#]*))?(?<hash>#(.*))?$/;
 	static #AuthorityRegExp = /^(?<authentication>(?<username>[^:]*)(:(?<password>[^@]*))?@)?(?<hostname>[^:]+)(:(?<port>\d+))?$/;
 
+	/** The URL fragment, including the leading `#` when present. */
 	get hash() {
 		return this.#url.hash;
 	}
@@ -47,18 +59,21 @@ export class URL {
 			this.#url.hash = `#${encodeURIComponent(value)}`;
 		}
 	}
+	/** The hostname and port of the URL. */
 	get host() {
 		return this.port.length > 0 ? `${this.hostname}:${this.port}` : this.hostname;
 	}
 	set host(value: string) {
 		[this.hostname, this.port] = value.split(":", 2);
 	}
+	/** The encoded hostname of the URL. */
 	get hostname() {
 		return encodeURIComponent(this.#url.hostname);
 	}
 	set hostname(value: string) {
 		this.#url.hostname = value ?? "";
 	}
+	/** The complete serialized URL. */
 	get href() {
 		let authority = "";
 		if (this.username.length > 0) {
@@ -82,15 +97,18 @@ export class URL {
 		this.search = urlMatch.groups.query ?? "";
 		this.hash = urlMatch.groups.hash ?? "";
 	}
+	/** The serialized origin, consisting of the protocol and host. */
 	get origin() {
 		return `${this.protocol}//${this.host}`;
 	}
+	/** The encoded password specified before the host. */
 	get password() {
 		return encodeURIComponent(this.#url.password);
 	}
 	set password(value: string) {
 		if (this.username.length > 0) this.#url.password = value ?? "";
 	}
+	/** The URL path, including the leading `/`. */
 	get pathname() {
 		return `/${this.#url.pathname}`;
 	}
@@ -99,6 +117,7 @@ export class URL {
 		if (value.startsWith("/")) value = value.slice(1);
 		this.#url.pathname = value;
 	}
+	/** The explicit port, or an empty string for the protocol's default port. */
 	get port() {
 		if (Number.isNaN(this.#url.port)) return "";
 		const port = this.#url.port.toString();
@@ -118,6 +137,7 @@ export class URL {
 			}
 		}
 	}
+	/** The URL scheme, including the trailing `:`. */
 	get protocol() {
 		return `${this.#url.protocol}:`;
 	}
@@ -125,6 +145,7 @@ export class URL {
 		if (value.endsWith(":")) value = value.slice(0, -1);
 		this.#url.protocol = value;
 	}
+	/** The serialized query string, including the leading `?` when present. */
 	get search() {
 		if (this.#url.search.length > 0) return `?${this.#url.search}`;
 		else return "";
@@ -137,9 +158,11 @@ export class URL {
 			this.#url.search = search;
 		});
 	}
+	/** A mutable view of the URL query parameters. */
 	get searchParams() {
 		return this.#url.searchParams;
 	}
+	/** The encoded username specified before the host. */
 	get username() {
 		return encodeURIComponent(this.#url.username);
 	}
@@ -147,19 +170,26 @@ export class URL {
 		this.#url.username = value ?? "";
 	}
 
+	/**
+	 * Parses a URL using the same inputs accepted by the constructor.
+	 *
+	 * @param url - The absolute or relative URL to parse.
+	 * @param base - The absolute base URL used to resolve a relative URL.
+	 * @returns A parsed URL instance.
+	 */
 	static parse = (url: string, base?: string) => new URL(url, base);
 
 	/**
 	 * Returns the string representation of the URL.
 	 *
-	 * @returns {string} The href of the URL.
+	 * @returns The complete serialized URL.
 	 */
 	toString = (): string => this.href;
 
 	/**
 	 * Converts the URL object properties to a JSON string.
 	 *
-	 * @returns {string} A JSON string representation of the URL object.
+	 * @returns A JSON string containing the public URL properties.
 	 */
 	toJSON = (): string =>
 		JSON.stringify({
